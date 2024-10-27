@@ -4,11 +4,6 @@ library(ggplot2)
 # sheet 3 is the sheet with the after coffee data
 data <- read.xlsx("dataset.xlsx", sheet = 3)
 
-data$testID <- factor(data$testID, 
-                      levels = c(4, 5, 6, 7), 
-                      labels = c("Immediate", "After 10 minutes", "After 20 minutes", "After 30 minutes"))
-# remove the last column
-data <- data[, -ncol(data)]
 # plot the data
 ggplot(data, aes(x = time)) +
   geom_line(aes(y = watch, color = "Watch HRV"), size = 0.8) +
@@ -22,7 +17,6 @@ ggplot(data, aes(x = time)) +
        color = "Measurement tool") +
   theme_minimal() +
   theme(legend.position = "top")#+
-#scale_color_manual(values = c("Watch HRV" = "#96abdc", "PPG Device HRV" = "#ec5e57"))  # set color
 
 # analyse the data, using Kruskal-Wallis test
 kruskal_result <- kruskal.test(watch ~ testID, data = data)
@@ -34,7 +28,6 @@ print(kruskal_result)
 library(dunn.test)
 dunn_result <- dunn.test(data$watch, data$testID, method = "bonferroni")
 print(dunn_result)
-
 
 # Friedman test
 friedman_result <- friedman.test(cbind(watch, device) ~ testID | time, data = data)
